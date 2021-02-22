@@ -15,6 +15,9 @@ const { info } = require("console");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
+const teamArray = [];
+
+function employeePrompt() {
 inquirer.prompt([
     {
         type: "input",
@@ -25,7 +28,7 @@ inquirer.prompt([
         type: "list",
         name: "role",
         message: "What is the employee's role on the team?",
-        choices: ["Manager", "Engineer", "Intern"]
+        choices: ["Manager", "Engineer", "Intern", "Done adding team members"]
     },
     {
         type: "input",
@@ -42,10 +45,73 @@ inquirer.prompt([
     },
     
 
-]).then((data) => {
-    fs.writeFile("./output/teamInfo.js", data, (err) =>
-    err ? console.error(err) : console.log("Employee added to roster"));
+]).then((info) => {
+    const role = info.role
+    if (role === "Manager") {
+        ManagerPrompt(info);
+
+    } else if (role === "Engineer") {
+        EngPrompt(info)
+
+    } else if (role === "Intern") {
+        intPrompt(info);
+
+    } else {
+        render
+    }
 });
+};
+
+// Prompts additional questions from user selection for Role
+function ManagerPrompt(info) {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "number",
+            message: "What is the Managers Office Number?",
+        },
+    ]).then((office) =>{
+        const newManager = new Manager (info.name, info.role, info.email, info.id, office.number)
+        console.log(newManager);
+        teamArray.push(newManager);
+        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
+        employeePrompt();
+    });
+};
+
+function EngPrompt(info) {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "github",
+            message: "What is the Engineers github username?",
+        },
+    ]).then((eng) =>{
+        const newEng = new Engineer (info.name, info.role, info.email, info.id, eng.github)
+        console.log(newEng);
+        teamArray.push(newEng);
+        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
+        employeePrompt();
+    });
+};
+
+function intPrompt (info) {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "school",
+            message: "What school does the Intern go to?",
+        },
+    ]).then((int) =>{
+        const newInt = new Intern (info.name, info.role, info.email, info.id, int.school)
+        console.log(newInt);
+        teamArray.push(newInt);
+        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
+        employeePrompt();
+    });
+};
+
+employeePrompt();
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
