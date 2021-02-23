@@ -12,10 +12,12 @@ const render = require("./lib/htmlRenderer");
 const { info } = require("console");
 
 
+
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
-const teamArray = [];
+// not sure if necessary but changed to 'employees' to align with htmlRenderer
+const employees = [];
 
 function employeePrompt() {
 inquirer.prompt([
@@ -28,14 +30,13 @@ inquirer.prompt([
         type: "list",
         name: "role",
         message: "What is the employee's role on the team?",
-        choices: ["Manager", "Engineer", "Intern", "Done adding team members"]
+        choices: ["Manager", "Engineer", "Intern",]
     },
     {
         type: "input",
         name: "email",
         message: "What is the employee's email address?",
         
-
     },
         {
         type: "input",
@@ -48,12 +49,15 @@ inquirer.prompt([
 ]).then((info) => {
     const role = info.role
     if (role === "Manager") {
+
         ManagerPrompt(info);
 
     } else if (role === "Engineer") {
+
         EngPrompt(info)
 
     } else if (role === "Intern") {
+
         intPrompt(info);
 
     } else {
@@ -70,12 +74,21 @@ function ManagerPrompt(info) {
             name: "number",
             message: "What is the Managers Office Number?",
         },
+        {
+            type: "confirm",
+            name: "nextQuestion",
+            message: "Will you be adding another person to this team?"
+        }
     ]).then((office) =>{
-        const newManager = new Manager (info.name, info.role, info.email, info.id, office.number)
+        const newManager = new Manager (info.name, info.id, info.email, office.number)
         console.log(newManager);
-        teamArray.push(newManager);
-        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
-        employeePrompt();
+        employees.push(newManager);
+        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        if (office.nextQuestion === true) {
+            employeePrompt();
+        } else {
+            render(employees);
+        }
     });
 };
 
@@ -86,12 +99,21 @@ function EngPrompt(info) {
             name: "github",
             message: "What is the Engineers github username?",
         },
+        {
+            type: "confirm",
+            name: "nextQuestion",
+            message: "Will you be adding another person to this team?"
+        }
     ]).then((eng) =>{
-        const newEng = new Engineer (info.name, info.role, info.email, info.id, eng.github)
+        const newEng = new Engineer (info.name, info.id, info.email, eng.github)
         console.log(newEng);
-        teamArray.push(newEng);
-        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
-        employeePrompt();
+        employees.push(newEng);
+        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        if (eng.nextQuestion === true) {
+            employeePrompt();
+        } else {
+            render(employees);
+        }
     });
 };
 
@@ -102,14 +124,24 @@ function intPrompt (info) {
             name: "school",
             message: "What school does the Intern go to?",
         },
+        {
+            type: "confirm",
+            name: "nextQuestion",
+            message: "Will you be adding another person to this team?"
+        }
     ]).then((int) =>{
-        const newInt = new Intern (info.name, info.role, info.email, info.id, int.school)
+        const newInt = new Intern (info.name, info.id, info.email, int.school)
         console.log(newInt);
-        teamArray.push(newInt);
-        console.log(`this is the team so far: ${JSON.stringify(teamArray)}`);
-        employeePrompt();
+        employees.push(newInt);
+        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        if (int.nextQuestion === true) {
+            employeePrompt();
+        } else {
+            render(employees);
+        }
     });
 };
+
 
 employeePrompt();
 
