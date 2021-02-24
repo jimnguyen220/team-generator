@@ -49,20 +49,15 @@ inquirer.prompt([
 ]).then((info) => {
     const role = info.role
     if (role === "Manager") {
-
         ManagerPrompt(info);
 
     } else if (role === "Engineer") {
-
         EngPrompt(info)
 
     } else if (role === "Intern") {
-
         intPrompt(info);
 
-    } else {
-        render
-    }
+    } 
 });
 };
 
@@ -81,13 +76,13 @@ function ManagerPrompt(info) {
         }
     ]).then((office) =>{
         const newManager = new Manager (info.name, info.id, info.email, office.number)
-        console.log(newManager);
+        // console.log(newManager);
         employees.push(newManager);
-        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        // console.log(`this is the team so far: ${JSON.stringify(employees)}`);
         if (office.nextQuestion === true) {
             employeePrompt();
         } else {
-            render(employees);
+            writeFile();
         }
     });
 };
@@ -106,13 +101,13 @@ function EngPrompt(info) {
         }
     ]).then((eng) =>{
         const newEng = new Engineer (info.name, info.id, info.email, eng.github)
-        console.log(newEng);
+        // console.log(newEng);
         employees.push(newEng);
-        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        // console.log(`this is the team so far: ${JSON.stringify(employees)}`);
         if (eng.nextQuestion === true) {
             employeePrompt();
         } else {
-            render(employees);
+            writeFile();
         }
     });
 };
@@ -131,19 +126,27 @@ function intPrompt (info) {
         }
     ]).then((int) =>{
         const newInt = new Intern (info.name, info.id, info.email, int.school)
-        console.log(newInt);
+        // console.log(newInt);
         employees.push(newInt);
-        console.log(`this is the team so far: ${JSON.stringify(employees)}`);
+        // console.log(`this is the team so far: ${JSON.stringify(employees)}`);
         if (int.nextQuestion === true) {
             employeePrompt();
         } else {
-            render(employees);
+            writeFile();
         }
     });
 };
 
+function writeFile() {
+    const data = render(employees);
+    fs.writeFile(outputPath, data, (err) => {
+        err ? console.error(err) : console.log('Team Successfully created!')
+    })
+};
+
 
 employeePrompt();
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
