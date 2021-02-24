@@ -1,0 +1,17 @@
+body {
+    background-color: lightgoldenrodyellow;
+}
+
+.team-heading {
+    background-color: maroon;
+    color: lightgrey;
+}
+
+.card {
+    margin: auto;
+}
+
+.card-header {
+    background-color: rgb(217, 219, 223);
+}
+
