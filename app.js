@@ -16,7 +16,7 @@ const { info } = require("console");
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
-// not sure if necessary but changed to 'employees' to align with htmlRenderer
+
 const employees = [];
 
 function employeePrompt() {
@@ -36,7 +36,15 @@ inquirer.prompt([
         type: "input",
         name: "email",
         message: "What is the employee's email address?",
-        
+        validate: function(email) {
+            
+            if (/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email)) {
+                return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+            } else {
+                return `Please Enter a Valid Email Address`
+            }
+            
+        },
     },
         {
         type: "input",
@@ -49,10 +57,10 @@ inquirer.prompt([
 ]).then((info) => {
     const role = info.role
     if (role === "Manager") {
-        ManagerPrompt(info);
+        managerPrompt(info);
 
     } else if (role === "Engineer") {
-        EngPrompt(info)
+        engPrompt(info)
 
     } else if (role === "Intern") {
         intPrompt(info);
@@ -62,7 +70,7 @@ inquirer.prompt([
 };
 
 // Prompts additional questions from user selection for Role
-function ManagerPrompt(info) {
+function managerPrompt(info) {
     inquirer.prompt([
         {
             type: "input",
@@ -87,7 +95,7 @@ function ManagerPrompt(info) {
     });
 };
 
-function EngPrompt(info) {
+function engPrompt(info) {
     inquirer.prompt([
         {
             type: "input",
@@ -137,7 +145,9 @@ function intPrompt (info) {
     });
 };
 
+
 function writeFile() {
+    // defines data, pushes employees array into the render function
     const data = render(employees);
     fs.writeFile(outputPath, data, (err) => {
         err ? console.error(err) : console.log('Team Successfully created!')
@@ -145,6 +155,7 @@ function writeFile() {
 };
 
 
+// calls function when app loads
 employeePrompt();
 
 
